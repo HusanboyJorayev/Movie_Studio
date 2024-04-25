@@ -16,5 +16,13 @@ public interface ActorService<K, V> {
 
     ResponseEntity<ApiResponse<V>> delete(K id);
 
+    ResponseEntity<ApiResponse<String>> deleteAll();
+
+    Integer deleteActorByQueryByCode(Integer code);
+
     ResponseEntity<ApiResponse<List<V>>> getAll();
+
+    ResponseEntity<List<SomeActorFields>> someActorFields();
+
+    ResponseEntity<List<SomeActorFields>> someActorFieldsByQuery();
 }

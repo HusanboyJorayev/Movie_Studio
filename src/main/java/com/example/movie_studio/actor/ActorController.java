@@ -1,6 +1,7 @@
 package com.example.movie_studio.actor;
 
 import com.example.movie_studio.dto.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class ActorController implements ActorService<Long, ActorDto> {
 
     @Override
     @PostMapping("/create")
-    public ResponseEntity<ApiResponse<ActorDto>> create(@RequestBody ActorDto dto) {
+    public ResponseEntity<ApiResponse<ActorDto>> create(@Valid @RequestBody ActorDto dto) {
         return this.actorServiceImpl.create(dto);
     }
 
@@ -27,7 +28,7 @@ public class ActorController implements ActorService<Long, ActorDto> {
 
     @Override
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse<ActorDto>> update(@RequestBody ActorDto dto, @PathVariable("id") Long id) {
+    public ResponseEntity<ApiResponse<ActorDto>> update(@Valid @RequestBody ActorDto dto, @PathVariable("id") Long id) {
         return this.actorServiceImpl.update(dto, id);
     }
 
@@ -38,8 +39,32 @@ public class ActorController implements ActorService<Long, ActorDto> {
     }
 
     @Override
+    @DeleteMapping("/deleteByCode/{code}")
+    public Integer deleteActorByQueryByCode(@PathVariable("code") Integer code) {
+        return this.actorServiceImpl.deleteActorByQueryByCode(code);
+    }
+
+    @Override
     @GetMapping("/getAll")
     public ResponseEntity<ApiResponse<List<ActorDto>>> getAll() {
         return this.actorServiceImpl.getAll();
+    }
+
+    @Override
+    @GetMapping("/deleteAll")
+    public ResponseEntity<ApiResponse<String>> deleteAll() {
+        return this.actorServiceImpl.deleteAll();
+    }
+
+    @Override
+    @GetMapping("/someActorFields")
+    public ResponseEntity<List<SomeActorFields>> someActorFields() {
+        return this.actorServiceImpl.someActorFields();
+    }
+
+    @Override
+    @GetMapping("/someActorFieldsByQuery")
+    public ResponseEntity<List<SomeActorFields>> someActorFieldsByQuery() {
+        return this.actorServiceImpl.someActorFieldsByQuery();
     }
 }
