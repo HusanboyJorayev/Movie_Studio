@@ -1,5 +1,7 @@
 package com.example.movie_studio.actor;
 
+import com.example.movie_studio.casts.Casts;
+import com.example.movie_studio.casts.CastsDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +10,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,7 +36,7 @@ public class ActorDto {
 
     @Column(nullable = false)
     @NotBlank(message = "gender cannot be null or empty")
-    @Size(message = "message size must be  between {min} and {max}",min = 3, max = 10 )
+    @Size(message = "message size must be  between {min} and {max}", min = 3, max = 10)
     private String gender;
 
     @Column(nullable = false)
@@ -43,6 +46,8 @@ public class ActorDto {
     @Column(nullable = false)
     @NotNull(message = "yearOfBirth cannot be null")
     private Integer yearOfBirth;
+
+    List<CastsDto> casts;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

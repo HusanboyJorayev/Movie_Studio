@@ -67,4 +67,9 @@ public class ActorController implements ActorService<Long, ActorDto> {
     public ResponseEntity<List<SomeActorFields>> someActorFieldsByQuery() {
         return this.actorServiceImpl.someActorFieldsByQuery();
     }
+
+    @GetMapping("/getActorWithCastsById/{id}")
+    public ResponseEntity<ApiResponse<ActorDto>> getActorWithCastsById(@PathVariable("id") Long id) {
+        return this.actorServiceImpl.getActorWithCastsById(id);
+    }
 }

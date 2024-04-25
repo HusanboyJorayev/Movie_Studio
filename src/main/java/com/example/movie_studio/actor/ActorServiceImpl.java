@@ -1,5 +1,8 @@
 package com.example.movie_studio.actor;
 
+import com.example.movie_studio.casts.Casts;
+import com.example.movie_studio.casts.CastsMapper;
+import com.example.movie_studio.casts.CastsRepository;
 import com.example.movie_studio.dto.ApiResponse;
 import com.example.movie_studio.dto.ErrorDto;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ActorServiceImpl implements ActorService<Long, ActorDto> {
     private final ActorMapper actorMapper;
+    private final CastsRepository castsRepository;
     private final ActorRepository actorRepository;
 
     @Override
@@ -121,6 +125,25 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
                         .success(true)
                         .message("Ok")
                         .build());
+    }
+
+    public ResponseEntity<ApiResponse<ActorDto>> getActorWithCastsById(Long id) {
+        return this.actorRepository.findActorByIdAndDeletedAtIsNull(id)
+                .map(actor -> {
+                    var casts = this.castsRepository.findByCastsByActorId(id);
+                    actor.setCasts(casts);
+                    return ResponseEntity.status(HttpStatus.OK)
+                            .body(ApiResponse.<ActorDto>builder()
+                                    .success(true)
+                                    .message("Ok")
+                                    .data(this.actorMapper.toDtoWithCasts(actor))
+                                    .build());
+                })
+                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(ApiResponse.<ActorDto>builder()
+                                .code(-1)
+                                .message("Actor cannot be found")
+                                .build()));
     }
 
     @Override
