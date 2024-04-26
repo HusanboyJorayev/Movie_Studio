@@ -4,6 +4,8 @@ import com.example.movie_studio.actor.Actor;
 import com.example.movie_studio.actor.ActorRepository;
 import com.example.movie_studio.casts.Casts;
 import com.example.movie_studio.casts.CastsRepository;
+import com.example.movie_studio.director.Director;
+import com.example.movie_studio.director.DirectorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -20,7 +22,7 @@ public class MovieStudioApplication {
 
     //@Bean
     // fake actors
-    public CommandLineRunner runner(ActorRepository repository) {
+    public CommandLineRunner runActor(ActorRepository repository) {
         return args -> {
             for (int i = 1; i <= 100; i++) {
                 Actor actor = Actor.builder()
@@ -39,7 +41,7 @@ public class MovieStudioApplication {
 
     //@Bean
     // fake casts
-    public CommandLineRunner run(CastsRepository repository) {
+    public CommandLineRunner runCasts(CastsRepository repository) {
         return args -> {
             for (int i = 1; i <= 10; i++) {
                 Casts actor = Casts.builder()
@@ -50,6 +52,23 @@ public class MovieStudioApplication {
                         .build();
 
                 repository.save(actor);
+            }
+        };
+    }
+
+    //@Bean
+    // fake directors
+    public CommandLineRunner runDirector(DirectorRepository repository) {
+        return args -> {
+            for (int i = 1; i <= 100; i++) {
+                Director director = Director.builder()
+                        .country("country" + i)
+                        .gender("male")
+                        .name("name" + i)
+                        .yearBirth(1921 + i)
+                        .placeBirth("place" + i)
+                        .build();
+                repository.save(director);
             }
         };
     }
