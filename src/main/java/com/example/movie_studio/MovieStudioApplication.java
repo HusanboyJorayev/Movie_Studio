@@ -6,6 +6,8 @@ import com.example.movie_studio.casts.Casts;
 import com.example.movie_studio.casts.CastsRepository;
 import com.example.movie_studio.director.Director;
 import com.example.movie_studio.director.DirectorRepository;
+import com.example.movie_studio.movie.Movie;
+import com.example.movie_studio.movie.MovieRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -69,6 +71,26 @@ public class MovieStudioApplication {
                         .placeBirth("place" + i)
                         .build();
                 repository.save(director);
+            }
+        };
+    }
+
+    //@Bean
+    // fake movie
+    public CommandLineRunner runMovies(MovieRepository repository) {
+        return args -> {
+            for (int i = 1; i <= 100; i++) {
+                Movie movie = Movie.builder()
+                        .category("category" + i)
+                        .countryOfRelease("countryOfRelease" + i)
+                        .studioId(1 + i / 2)
+                        .directorId(1 + i / 2)
+                        .filmingLocation("filmingLocation" + i)
+                        .language("language" + i)
+                        .yearOfRelease(1830 + i)
+                        .name("name" + i)
+                        .build();
+                repository.save(movie);
             }
         };
     }
