@@ -8,6 +8,8 @@ import com.example.movie_studio.director.Director;
 import com.example.movie_studio.director.DirectorRepository;
 import com.example.movie_studio.movie.Movie;
 import com.example.movie_studio.movie.MovieRepository;
+import com.example.movie_studio.studio.Studio;
+import com.example.movie_studio.studio.StudioRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -76,7 +78,7 @@ public class MovieStudioApplication {
     }
 
     //@Bean
-    // fake movie
+    // fake movies
     public CommandLineRunner runMovies(MovieRepository repository) {
         return args -> {
             for (int i = 1; i <= 100; i++) {
@@ -91,6 +93,22 @@ public class MovieStudioApplication {
                         .name("name" + i)
                         .build();
                 repository.save(movie);
+            }
+        };
+    }
+
+    //@Bean
+    // fake studios
+    public CommandLineRunner runStudio(StudioRepository repository) {
+        return args -> {
+            for (int i = 1; i <= 100; i++) {
+                Studio studio = Studio.builder()
+                        .city("city" + i)
+                        .companyName("company name" + i)
+                        .founded(i)
+                        .companyType("company type" + i)
+                        .build();
+                repository.save(studio);
             }
         };
     }
