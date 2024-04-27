@@ -13,6 +13,7 @@ public interface StudioService<K, V> {
     ResponseEntity<ApiResponse<V>> create(V dto);
 
     ResponseEntity<ApiResponse<V>> get(K id);
+    ResponseEntity<ApiResponse<V>> getWithMovie(K id);
 
     ResponseEntity<ApiResponse<V>> delete(K id);
 

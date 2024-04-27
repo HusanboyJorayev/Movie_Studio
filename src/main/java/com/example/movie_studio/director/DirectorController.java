@@ -56,7 +56,13 @@ public class DirectorController implements DirectorService<Integer, DirectorDto>
     @Override
     @GetMapping("/getPages/{page}/{size}")
     public ResponseEntity<ApiResponse<Page<DirectorDto>>> getPages(@PathVariable("page") Integer page,
-                                                                   @PathVariable("size") Integer size ) {
+                                                                   @PathVariable("size") Integer size) {
         return this.directorServiceImpl.getPages(page, size);
+    }
+
+    @Override
+    @GetMapping("/getWithMovie/{id}")
+    public ResponseEntity<ApiResponse<DirectorDto>> getWithMovie(@PathVariable("id") Integer id) {
+        return this.directorServiceImpl.getWithMovie(id);
     }
 }

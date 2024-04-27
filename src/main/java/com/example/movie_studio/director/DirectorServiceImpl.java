@@ -1,6 +1,8 @@
 package com.example.movie_studio.director;
 
 import com.example.movie_studio.dto.ApiResponse;
+import com.example.movie_studio.movie.Movie;
+import com.example.movie_studio.movie.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,11 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class DirectorServiceImpl implements DirectorService<Integer, DirectorDto> {
     private final DirectorMapper directorMapper;
+    private final MovieRepository movieRepository;
     private final DirectorRepository directorRepository;
 
     @Override
@@ -142,5 +146,30 @@ public class DirectorServiceImpl implements DirectorService<Integer, DirectorDto
                         .message("Ok")
                         .data(getPage.map(this.directorMapper::toDto))
                         .build());
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<DirectorDto>> getWithMovie(Integer id) {
+        return this.directorRepository.getDirectorById(id)
+                .map(director -> {
+                    var allMoviesByDirectorId = this.movieRepository.findAllMoviesByDirectorId(id);
+                    if (allMoviesByDirectorId.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                                .body(ApiResponse.<DirectorDto>builder()
+                                        .code(-1)
+                                        .message("Director is not found movie")
+                                        .build());
+                    }
+                    director.setMovies(allMoviesByDirectorId);
+                    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<DirectorDto>builder()
+                            .success(true)
+                            .message("Ok")
+                            .data(this.directorMapper.toDtoWithMovie(director))
+                            .build());
+                })
+                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<DirectorDto>builder()
+                        .code(-1)
+                        .message("Director is not found")
+                        .build()));
     }
 }

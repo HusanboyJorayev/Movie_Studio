@@ -65,4 +65,10 @@ public class StudioController implements StudioService<Integer, StudioDto> {
                                                                              @PathVariable("size") Integer size) {
         return this.studentServiceImpl.getStudioPagesByList(page, size);
     }
+
+    @Override
+    @GetMapping("/getWithMovies/{id}")
+    public ResponseEntity<ApiResponse<StudioDto>> getWithMovie(@PathVariable("id") Integer id) {
+        return this.studentServiceImpl.getWithMovie(id);
+    }
 }

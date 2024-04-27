@@ -1,20 +1,26 @@
 package com.example.movie_studio.studio;
 
 import com.example.movie_studio.dto.ApiResponse;
+import com.example.movie_studio.movie.Movie;
+import com.example.movie_studio.movie.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudioService<Integer, StudioDto> {
     private final StudioMapper studioMapper;
+    private final MovieRepository movieRepository;
     private final StudioRepository studioRepository;
 
     @Override
@@ -143,5 +149,29 @@ public class StudentServiceImpl implements StudioService<Integer, StudioDto> {
                 .message("OK")
                 .data(pagesByList.stream().map(this.studioMapper::toDto).toList())
                 .build());
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<StudioDto>> getWithMovie(Integer id) {
+        return this.studioRepository.findStudioById(id)
+                .map(studio -> {
+                    var allMoviesByStudioId = this.movieRepository.findAllMoviesByStudioId(id);
+                    if (allMoviesByStudioId.isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<StudioDto>builder()
+                                .code(-1)
+                                .message("Studio is not found movie table")
+                                .build());
+                    }
+                    studio.setMovies(allMoviesByStudioId);
+                    return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<StudioDto>builder()
+                            .success(true)
+                            .message("OK")
+                            .data(this.studioMapper.toDtoWithMovie(studio))
+                            .build());
+                })
+                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<StudioDto>builder()
+                        .code(-1)
+                        .message("Studio is not found")
+                        .build()));
     }
 }

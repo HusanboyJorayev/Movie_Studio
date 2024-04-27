@@ -14,6 +14,7 @@ public interface DirectorService<K, V> {
     ResponseEntity<ApiResponse<V>> create(V dto);
 
     ResponseEntity<ApiResponse<V>> get(K id);
+    ResponseEntity<ApiResponse<V>> getWithMovie(K id);
 
     ResponseEntity<ApiResponse<V>> update(V dto, K id);
 

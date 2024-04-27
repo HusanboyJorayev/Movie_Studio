@@ -1,9 +1,11 @@
 package com.example.movie_studio.studio;
 
+import com.example.movie_studio.movie.Movie;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +23,9 @@ public class Studio {
     private String city;
     private Integer founded;
     private String companyType;
+
+    @OneToMany(mappedBy = "studioId",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    List<Movie>movies;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

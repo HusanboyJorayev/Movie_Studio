@@ -30,5 +30,16 @@ public interface MovieRepository extends JpaRepository<Movie, Integer> {
     List<Movie> getMoviesBySomeIds(List<Integer> list);
 
 
+    @Query("""
+            select m from Movie as m where m.studioId=?1
+            """)
+    List<Movie> findAllMoviesByStudioId(Integer id);
+
+
+    @Query("""
+            select m from Movie as m where m.directorId=?1
+            """)
+    List<Movie> findAllMoviesByDirectorId(Integer id);
+
     Page<Movie> findAllByDeletedAtIsNull(Pageable pageable);
 }

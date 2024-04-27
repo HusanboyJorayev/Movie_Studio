@@ -1,5 +1,7 @@
 package com.example.movie_studio.director;
 
+import com.example.movie_studio.movie.Movie;
+import com.example.movie_studio.movie.MovieDto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,6 +43,9 @@ public class DirectorDto {
     @Column(nullable = false)
     @NotNull(message = "year of birth cannot be null")
     private Integer yearBirth;
+
+    List<MovieDto> movies;
+
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
