@@ -10,6 +10,9 @@ import com.example.movie_studio.movie.Movie;
 import com.example.movie_studio.movie.MovieRepository;
 import com.example.movie_studio.studio.Studio;
 import com.example.movie_studio.studio.StudioRepository;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,6 +21,12 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDateTime;
 
 @SpringBootApplication
+@SecurityScheme(name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer", bearerFormat = "JWT")
+@SecurityScheme(name = "basicAuth",
+        type = SecuritySchemeType.HTTP,
+        scheme = "basic")
 public class MovieStudioApplication {
 
     public static void main(String[] args) {
@@ -111,5 +120,45 @@ public class MovieStudioApplication {
                 repository.save(studio);
             }
         };
+    }
+
+    @Bean
+    public GroupedOpenApi actorApi() {
+        return GroupedOpenApi.builder()
+                .group("actor")
+                .pathsToMatch("/api/actor/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi castsApi() {
+        return GroupedOpenApi.builder()
+                .group("casts")
+                .pathsToMatch("/api/casts/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi directorApi() {
+        return GroupedOpenApi.builder()
+                .group("director")
+                .pathsToMatch("/api/director/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi movieApi() {
+        return GroupedOpenApi.builder()
+                .group("movie")
+                .pathsToMatch("/api/movie/**")
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi studioApi() {
+        return GroupedOpenApi.builder()
+                .group("studio")
+                .pathsToMatch("/api/studio/**")
+                .build();
     }
 }
