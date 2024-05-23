@@ -5,7 +5,13 @@ import com.example.movie_studio.casts.CastsMapper;
 import com.example.movie_studio.casts.CastsRepository;
 import com.example.movie_studio.dto.ApiResponse;
 import com.example.movie_studio.dto.ErrorDto;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -186,5 +192,32 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
                 .message("Ok")
                 .data(allFilterActors.stream().map(this.actorMapper::toDto).toList())
                 .build());
+    }
+
+    @Override
+    public void exportToExcel(HttpServletResponse response) {
+        List<Actor> allActors = this.actorRepository.findAllActors();
+
+        XSSFWorkbook workbook = new XSSFWorkbook();
+        ExcelExportUtil excelExporter = new ExcelExportUtil(workbook);
+        excelExporter.writeHeaderLine("Actor", List.of("name", "gender", "codes", "nationality", "yearOfBirth"));
+
+        CellStyle style = workbook.createCellStyle();
+        XSSFFont font = workbook.createFont();
+        font.setFontHeight(14);
+        style.setFont(font);
+
+        int rowCount = 0;
+        for (Actor allActor : allActors) {
+            Row row = excelExporter.getSheet().createRow(rowCount++ + 2);
+            int columnCount = 0;
+
+            excelExporter.createCell(row, columnCount++, allActor.getName(), style);
+            excelExporter.createCell(row, columnCount++, allActor.getGender(), style);
+            excelExporter.createCell(row, columnCount++, allActor.getCodes(), style);
+            excelExporter.createCell(row, columnCount++, allActor.getNationality(), style);
+            excelExporter.createCell(row, columnCount++, allActor.getYearOfBirth(), style);
+        }
+        excelExporter.export(response, "actors");
     }
 }

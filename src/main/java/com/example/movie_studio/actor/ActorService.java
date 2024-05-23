@@ -1,6 +1,7 @@
 package com.example.movie_studio.actor;
 
 import com.example.movie_studio.dto.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +10,8 @@ import java.util.Set;
 
 @Component
 public interface ActorService<K, V> {
+    void exportToExcel(HttpServletResponse response);
+
     ResponseEntity<ApiResponse<V>> create(V dto);
 
     ResponseEntity<ApiResponse<V>> get(K id);

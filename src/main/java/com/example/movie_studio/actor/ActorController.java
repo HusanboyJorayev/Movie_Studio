@@ -1,6 +1,7 @@
 package com.example.movie_studio.actor;
 
 import com.example.movie_studio.dto.ApiResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -89,5 +90,12 @@ public class ActorController implements ActorService<Long, ActorDto> {
     @GetMapping("/getManyActorsById")
     public ResponseEntity<ApiResponse<List<ActorDto>>> getManyActorsById(@RequestParam(required = false) Set<Long> id) {
         return this.actorServiceImpl.getManyActorsById(id);
+    }
+
+    @Override
+    @GetMapping("/exportToExcel")
+    public void exportToExcel(HttpServletResponse response) {
+        this.actorServiceImpl.exportToExcel(response);
+
     }
 }
