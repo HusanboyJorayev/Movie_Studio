@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -153,7 +154,37 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
     }
 
     @Override
+    public ResponseEntity<ApiResponse<List<ActorDto>>> getManyActorsById(Set<Long> id) {
+        List<Actor> manyActorsById = this.actorRepository.getManyActorsById(id);
+        if (manyActorsById.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<List<ActorDto>>builder().build());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<List<ActorDto>>builder()
+                .success(true)
+                .message("OK")
+                .data(manyActorsById.stream().map(this.actorMapper::toDto).toList())
+                .build());
+    }
+
+    @Override
     public ResponseEntity<List<SomeActorFields>> someActorFieldsByQuery() {
         return ResponseEntity.status(HttpStatus.OK).body(this.actorRepository.someActorFields());
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<List<ActorDto>>> actorFilters(Long id, String name, Integer codes,
+                                                                    String gender, String nationality, Integer yearOfBirth) {
+        List<Actor> allFilterActors = this.actorRepository.getAllFilterActors(id, name, codes, gender, nationality, yearOfBirth);
+        if (allFilterActors.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<List<ActorDto>>builder()
+                    .code(-1)
+                    .message("Actor filters cannot be found")
+                    .build());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<List<ActorDto>>builder()
+                .success(true)
+                .message("Ok")
+                .data(allFilterActors.stream().map(this.actorMapper::toDto).toList())
+                .build());
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 public interface ActorService<K, V> {
@@ -22,7 +23,12 @@ public interface ActorService<K, V> {
 
     ResponseEntity<ApiResponse<List<V>>> getAll();
 
+    ResponseEntity<ApiResponse<List<V>>> getManyActorsById(Set<K> id);
+
     ResponseEntity<List<SomeActorFields>> someActorFields();
 
     ResponseEntity<List<SomeActorFields>> someActorFieldsByQuery();
+
+    ResponseEntity<ApiResponse<List<V>>> actorFilters(Long id, String name, Integer codes,
+                                                      String gender, String nationality, Integer yearOfBirth);
 }

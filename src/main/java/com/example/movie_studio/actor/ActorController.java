@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/actor/")
@@ -71,5 +72,22 @@ public class ActorController implements ActorService<Long, ActorDto> {
     @GetMapping("/getActorWithCastsById/{id}")
     public ResponseEntity<ApiResponse<ActorDto>> getActorWithCastsById(@PathVariable("id") Long id) {
         return this.actorServiceImpl.getActorWithCastsById(id);
+    }
+
+    @Override
+    @GetMapping("/filters")
+    public ResponseEntity<ApiResponse<List<ActorDto>>> actorFilters(@RequestParam(value = "id", required = false) Long id,
+                                                                    @RequestParam(value = "name", required = false) String name,
+                                                                    @RequestParam(value = "codes", required = false) Integer codes,
+                                                                    @RequestParam(value = "gender", required = false) String gender,
+                                                                    @RequestParam(value = "nationality", required = false) String nationality,
+                                                                    @RequestParam(value = "year of birth", required = false) Integer yearOfBirth) {
+        return this.actorServiceImpl.actorFilters(id, name, codes, gender, nationality, yearOfBirth);
+    }
+
+    @Override
+    @GetMapping("/getManyActorsById")
+    public ResponseEntity<ApiResponse<List<ActorDto>>> getManyActorsById(@RequestParam(required = false) Set<Long> id) {
+        return this.actorServiceImpl.getManyActorsById(id);
     }
 }
