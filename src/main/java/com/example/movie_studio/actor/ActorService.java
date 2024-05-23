@@ -26,6 +26,9 @@ public interface ActorService<K, V> {
 
     ResponseEntity<ApiResponse<List<V>>> getAll();
 
+    ResponseEntity<ApiResponse<List<ActorFilter>>> AdvoncadSearch(Long id, String name, Integer codes,
+                                                        String gender, String nationality, Integer yearOfBirth);
+
     ResponseEntity<ApiResponse<List<V>>> getManyActorsById(Set<K> id);
 
     ResponseEntity<List<SomeActorFields>> someActorFields();

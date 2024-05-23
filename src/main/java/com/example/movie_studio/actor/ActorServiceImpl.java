@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -219,5 +220,34 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
             excelExporter.createCell(row, columnCount++, allActor.getYearOfBirth(), style);
         }
         excelExporter.export(response, "actors");
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse<List<ActorFilter>>> AdvoncadSearch(Long id, String name, Integer codes,
+                                                                         String gender, String nationality,
+                                                                         Integer yearOfBirth) {
+        List<ActorFilter> list = this.actorRepository.advoncadSearch(id, name, codes, gender, nationality, yearOfBirth)
+                .stream().map(t ->
+                        new ActorFilter(
+                                t.get(0, Long.class),
+                                t.get(1, String.class),
+                                t.get(2, Integer.class),
+                                t.get(3, String.class),
+                                t.get(4, String.class),
+                                t.get(5, Integer.class)
+                        )).toList();
+        return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<List<ActorFilter>>builder()
+                .success(true)
+                .message("OK")
+                .data(list)
+                .build());
+    }
+
+    public List<ActorDto> filterActor(Long id, String name, Integer codes,
+                                      String gender, String nationality,
+                                      Integer yearOfBirth) {
+        Specification<Actor> actorSpecification = new ActorSpecification(id, name, codes, gender, nationality, yearOfBirth);
+        List<Actor> all = this.actorRepository.findAll(actorSpecification);
+        return all.stream().map(this.actorMapper::toDto).toList();
     }
 }

@@ -1,6 +1,8 @@
 package com.example.movie_studio.actor;
 
+import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface ActorRepository extends JpaRepository<Actor, Long> {
+public interface ActorRepository extends JpaRepository<Actor, Long>, JpaSpecificationExecutor<Actor> {
 
     @Query("""
             select a from Actor as a where a.id=?1 and a.deletedAt is null\s
@@ -53,4 +55,11 @@ public interface ActorRepository extends JpaRepository<Actor, Long> {
             select a from Actor as a where a.id in (?1)
             """)
     List<Actor> getManyActorsById(Set<Long> id);
+
+
+    @Query("""
+            select a.id,a.name,a.codes,a.gender,a.nationality,a.yearOfBirth from Actor as a
+            """)
+    List<Tuple> advoncadSearch(Long id, String name, Integer codes,
+                               String gender, String nationality, Integer yearOfBirth);
 }

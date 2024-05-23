@@ -98,4 +98,25 @@ public class ActorController implements ActorService<Long, ActorDto> {
         this.actorServiceImpl.exportToExcel(response);
 
     }
+
+    @Override
+    @GetMapping("/advoncadSearch")
+    public ResponseEntity<ApiResponse<List<ActorFilter>>> AdvoncadSearch(@RequestParam(value = "id", required = false) Long id,
+                                                                         @RequestParam(value = "name", required = false) String name,
+                                                                         @RequestParam(value = "codes", required = false) Integer codes,
+                                                                         @RequestParam(value = "gender", required = false) String gender,
+                                                                         @RequestParam(value = "nationality", required = false) String nationality,
+                                                                         @RequestParam(value = "year of birth", required = false) Integer yearOfBirth) {
+        return this.actorServiceImpl.AdvoncadSearch(id, name, codes, gender, nationality, yearOfBirth);
+    }
+
+    @GetMapping("/filterActor")
+    public List<Actor> filterActor(@RequestParam(value = "id", required = false) Long id,
+                                   @RequestParam(value = "name", required = false) String name,
+                                   @RequestParam(value = "codes", required = false) Integer codes,
+                                   @RequestParam(value = "gender", required = false) String gender,
+                                   @RequestParam(value = "nationality", required = false) String nationality,
+                                   @RequestParam(value = "year of birth", required = false) Integer yearOfBirth) {
+        return this.actorServiceImpl.filterActor(id, name, codes, gender, nationality, yearOfBirth);
+    }
 }
