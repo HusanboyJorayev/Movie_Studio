@@ -27,7 +27,7 @@ public class Actor {
     private String nationality;
     private Integer yearOfBirth;
 
-    @OneToMany(mappedBy = "actorId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "actorId", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     List<Casts> casts;
 
     private LocalDateTime createdAt;

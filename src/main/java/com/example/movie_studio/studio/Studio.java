@@ -24,8 +24,8 @@ public class Studio {
     private Integer founded;
     private String companyType;
 
-    @OneToMany(mappedBy = "studioId",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
-    List<Movie>movies;
+    @OneToMany(mappedBy = "studioId", fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    List<Movie> movies;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

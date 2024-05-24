@@ -4,9 +4,14 @@ import com.example.movie_studio.dto.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -111,12 +116,14 @@ public class ActorController implements ActorService<Long, ActorDto> {
     }
 
     @GetMapping("/filterActor")
-    public List<Actor> filterActor(@RequestParam(value = "id", required = false) Long id,
-                                   @RequestParam(value = "name", required = false) String name,
-                                   @RequestParam(value = "codes", required = false) Integer codes,
-                                   @RequestParam(value = "gender", required = false) String gender,
-                                   @RequestParam(value = "nationality", required = false) String nationality,
-                                   @RequestParam(value = "year of birth", required = false) Integer yearOfBirth) {
-        return this.actorServiceImpl.filterActor(id, name, codes, gender, nationality, yearOfBirth);
+    public List<ActorDto> filterActor(//@RequestParam(value = "id", required = false) Long id,
+                                      @RequestParam(value = "name", required = false) String name,
+                                      @RequestParam(value = "codes", required = false) Integer codes,
+                                      @RequestParam(value = "gender", required = false) String gender,
+                                      @RequestParam(value = "nationality", required = false) String nationality,
+                                      @RequestParam(value = "year of birth", required = false) Integer yearOfBirth,
+                                      //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "dd-MM-yyyy") LocalDate now,
+                                      @RequestParam(value = "list of id", required = false) Set<Long> ids) {
+        return this.actorServiceImpl.filterActor(/*id,*/ name, codes, gender, nationality, yearOfBirth, ids);
     }
 }

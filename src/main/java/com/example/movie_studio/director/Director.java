@@ -25,7 +25,7 @@ public class Director {
     private String country;
     private Integer yearBirth;
 
-    @OneToMany(mappedBy = "directorId",fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "directorId",fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
     List<Movie>movies;
 
     private LocalDateTime createdAt;

@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -243,10 +245,10 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
                 .build());
     }
 
-    public List<ActorDto> filterActor(Long id, String name, Integer codes,
+    public List<ActorDto> filterActor(/*Long id,*/ String name, Integer codes,
                                       String gender, String nationality,
-                                      Integer yearOfBirth) {
-        Specification<Actor> actorSpecification = new ActorSpecification(id, name, codes, gender, nationality, yearOfBirth);
+                                      Integer yearOfBirth,Set<Long>ids) {
+        Specification<Actor> actorSpecification = new ActorSpecification(/*id,*/ name, codes, gender, nationality, yearOfBirth,ids);
         List<Actor> all = this.actorRepository.findAll(actorSpecification);
         return all.stream().map(this.actorMapper::toDto).toList();
     }
