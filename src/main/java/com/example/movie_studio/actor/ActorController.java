@@ -87,8 +87,9 @@ public class ActorController implements ActorService<Long, ActorDto> {
                                                                     @RequestParam(value = "codes", required = false) Integer codes,
                                                                     @RequestParam(value = "gender", required = false) String gender,
                                                                     @RequestParam(value = "nationality", required = false) String nationality,
-                                                                    @RequestParam(value = "year of birth", required = false) Integer yearOfBirth) {
-        return this.actorServiceImpl.actorFilters(id, name, codes, gender, nationality, yearOfBirth);
+                                                                    @RequestParam(value = "year of birth", required = false) Integer yearOfBirth,
+                                                                    HttpServletResponse response) {
+        return this.actorServiceImpl.actorFilters(id, name, codes, gender, nationality, yearOfBirth, response);
     }
 
     @Override
@@ -123,7 +124,24 @@ public class ActorController implements ActorService<Long, ActorDto> {
                                       @RequestParam(value = "nationality", required = false) String nationality,
                                       @RequestParam(value = "year of birth", required = false) Integer yearOfBirth,
                                       //@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME, pattern = "dd-MM-yyyy") LocalDate now,
-                                      @RequestParam(value = "list of id", required = false) Set<Long> ids) {
-        return this.actorServiceImpl.filterActor(/*id,*/ name, codes, gender, nationality, yearOfBirth, ids);
+                                      @RequestParam(value = "list of id", required = false) Set<Long> ids,
+                                      HttpServletResponse response) {
+
+        response.setContentType("application/octet-stream");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=actors.xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        return this.actorServiceImpl.filterActor(/*id,*/ name, codes, gender, nationality, yearOfBirth, ids, response);
+    }
+
+    @Override
+    @GetMapping("/generateExcel")
+    public void generateExcel(HttpServletResponse response) {
+        response.setContentType("application/vnd.ms-excel");
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=actors.xlsx";
+        response.setHeader(headerKey, headerValue);
+        this.actorServiceImpl.generateExcel(response);
     }
 }

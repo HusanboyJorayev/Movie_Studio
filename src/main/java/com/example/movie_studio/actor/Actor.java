@@ -33,5 +33,7 @@ public class Actor {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    private LocalDateTime fromDate;
+    private LocalDateTime toDate;
 }
 // todo 9860 1001 2618 1781

@@ -12,6 +12,8 @@ import java.util.Set;
 public interface ActorService<K, V> {
     void exportToExcel(HttpServletResponse response);
 
+    void generateExcel(HttpServletResponse response);
+
     ResponseEntity<ApiResponse<V>> create(V dto);
 
     ResponseEntity<ApiResponse<V>> get(K id);
@@ -27,7 +29,7 @@ public interface ActorService<K, V> {
     ResponseEntity<ApiResponse<List<V>>> getAll();
 
     ResponseEntity<ApiResponse<List<ActorFilter>>> AdvoncadSearch(Long id, String name, Integer codes,
-                                                        String gender, String nationality, Integer yearOfBirth);
+                                                                  String gender, String nationality, Integer yearOfBirth);
 
     ResponseEntity<ApiResponse<List<V>>> getManyActorsById(Set<K> id);
 
@@ -36,5 +38,5 @@ public interface ActorService<K, V> {
     ResponseEntity<List<SomeActorFields>> someActorFieldsByQuery();
 
     ResponseEntity<ApiResponse<List<V>>> actorFilters(Long id, String name, Integer codes,
-                                                      String gender, String nationality, Integer yearOfBirth);
+                                                      String gender, String nationality, Integer yearOfBirth,HttpServletResponse response);
 }

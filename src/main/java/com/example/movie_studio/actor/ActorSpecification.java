@@ -10,7 +10,6 @@ import lombok.NonNull;
 import org.springframework.data.jpa.domain.Specification;
 
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -34,16 +33,16 @@ public class ActorSpecification implements Specification<Actor> {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("id"), id));
         }*/
         if (name != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("name"), "%" + name + "%"));
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
         }
         if (codes != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("codes"), codes));
         }
         if (gender != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("gender"), "%" + gender + "%"));
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("gender")), "%" + gender.toLowerCase() + "%"));
         }
         if (nationality != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(root.get("nationality"), "%" + nationality + "%"));
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.like(criteriaBuilder.lower(root.get("nationality")), "%" + nationality.toLowerCase() + "%"));
         }
         if (yearOfBirth != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("yearOfBirth"), yearOfBirth));
@@ -58,7 +57,7 @@ public class ActorSpecification implements Specification<Actor> {
             predicate = criteriaBuilder.between(root.get(field), createdAt, date);
         }*/
         if (ids != null) {
-            predicate = criteriaBuilder.and(predicate,criteriaBuilder.and(root.get("id").in(ids)));
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.and(root.get("id").in(ids)));
             //predicate = criteriaBuilder.and(root.get("id").in(ids));
         }
         return predicate;

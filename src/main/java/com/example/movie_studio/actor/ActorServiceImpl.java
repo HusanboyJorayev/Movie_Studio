@@ -1,13 +1,13 @@
 package com.example.movie_studio.actor;
 
-import com.example.movie_studio.casts.Casts;
-import com.example.movie_studio.casts.CastsMapper;
 import com.example.movie_studio.casts.CastsRepository;
 import com.example.movie_studio.dto.ApiResponse;
-import com.example.movie_studio.dto.ErrorDto;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -17,8 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -182,7 +180,7 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
 
     @Override
     public ResponseEntity<ApiResponse<List<ActorDto>>> actorFilters(Long id, String name, Integer codes,
-                                                                    String gender, String nationality, Integer yearOfBirth) {
+                                                                    String gender, String nationality, Integer yearOfBirth, HttpServletResponse response) {
         List<Actor> allFilterActors = this.actorRepository.getAllFilterActors(id, name, codes, gender, nationality, yearOfBirth);
         if (allFilterActors.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse.<List<ActorDto>>builder()
@@ -190,6 +188,7 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
                     .message("Actor filters cannot be found")
                     .build());
         }
+
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.<List<ActorDto>>builder()
                 .success(true)
                 .message("Ok")
@@ -246,10 +245,101 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
     }
 
     public List<ActorDto> filterActor(/*Long id,*/ String name, Integer codes,
-                                      String gender, String nationality,
-                                      Integer yearOfBirth,Set<Long>ids) {
-        Specification<Actor> actorSpecification = new ActorSpecification(/*id,*/ name, codes, gender, nationality, yearOfBirth,ids);
+                                                   String gender, String nationality,
+                                                   Integer yearOfBirth, Set<Long> ids, HttpServletResponse response) {
+        Specification<Actor> actorSpecification = new ActorSpecification(/*id,*/ name, codes, gender, nationality, yearOfBirth, ids);
         List<Actor> all = this.actorRepository.findAll(actorSpecification);
-        return all.stream().map(this.actorMapper::toDto).toList();
+
+
+        try {
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            HSSFSheet sheet = workbook.createSheet("Actors Info");
+            HSSFRow row = sheet.createRow(0);
+
+            // row.createCell(0).setCellValue("ID");
+            row.createCell(0).setCellValue("NAME");
+            row.createCell(1).setCellValue("CODES");
+            row.createCell(2).setCellValue("GENDER");
+            row.createCell(3).setCellValue("NATIONALITY");
+            row.createCell(4).setCellValue("YEAR OF BIRTH");
+            //row.createCell(5).setCellValue("CREATED AT");
+
+            int dataRowIndex = 2;
+            List<ActorDto> actorDtoList = all.stream().map(this.actorMapper::toDto).toList();
+            for (ActorDto actorDto : actorDtoList) {
+                HSSFRow rowIndex = sheet.createRow(dataRowIndex);
+                // rowIndex.createCell(0).setCellValue(actorDto.getId());
+                rowIndex.createCell(0).setCellValue(actorDto.getName());
+                rowIndex.createCell(1).setCellValue(actorDto.getCodes());
+                rowIndex.createCell(2).setCellValue(actorDto.getGender());
+                rowIndex.createCell(3).setCellValue(actorDto.getNationality());
+                rowIndex.createCell(4).setCellValue(actorDto.getYearOfBirth());
+                //rowIndex.createCell(5).setCellValue(actorDto.getCreatedAt());
+                dataRowIndex++;
+            }
+            ServletOutputStream outputStream = response.getOutputStream();
+
+
+            workbook.write(outputStream);
+            workbook.close();
+            outputStream.close();
+            return all.stream().map(this.actorMapper::toDto).toList();
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
+    @Override
+    public void generateExcel(HttpServletResponse response) {
+        List<Actor> actorList = this.actorRepository.findAll();
+        try {
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            HSSFSheet sheet = workbook.createSheet("Actors Info");
+            HSSFRow row = sheet.createRow(0);
+
+            row.createCell(0).setCellValue("ID");
+            sheet.setColumnWidth(0, 4000);
+
+            row.createCell(1).setCellValue("NAME");
+            sheet.setColumnWidth(1, 4000);
+
+
+            row.createCell(2).setCellValue("CODES");
+            sheet.setColumnWidth(2, 4000);
+
+            row.createCell(3).setCellValue("GENDER");
+            sheet.setColumnWidth(3, 4000);
+
+            row.createCell(4).setCellValue("NATIONALITY");
+            sheet.setColumnWidth(4, 4000);
+
+            row.createCell(5).setCellValue("YEAR OF BIRTH");
+            sheet.setColumnWidth(5, 4000);
+
+            row.createCell(6).setCellValue("CREATED AT");
+            sheet.setColumnWidth(6, 4000);
+
+            int dataRowIndex = 2;
+            List<ActorDto> actorDtoList = actorList.stream().map(this.actorMapper::toDto).toList();
+            for (ActorDto actorDto : actorDtoList) {
+                HSSFRow rowIndex = sheet.createRow(dataRowIndex);
+
+
+                rowIndex.createCell(0).setCellValue(actorDto.getId());
+                rowIndex.createCell(1).setCellValue(actorDto.getName());
+                rowIndex.createCell(2).setCellValue(actorDto.getCodes());
+                rowIndex.createCell(3).setCellValue(actorDto.getGender());
+                rowIndex.createCell(4).setCellValue(actorDto.getNationality());
+                rowIndex.createCell(5).setCellValue(actorDto.getYearOfBirth());
+                rowIndex.createCell(6).setCellValue(actorDto.getCreatedAt());
+                dataRowIndex++;
+            }
+            ServletOutputStream outputStream = response.getOutputStream();
+
+            workbook.write(outputStream);
+            workbook.close();
+            outputStream.close();
+        } catch (Exception ignored) {
+        }
     }
 }
