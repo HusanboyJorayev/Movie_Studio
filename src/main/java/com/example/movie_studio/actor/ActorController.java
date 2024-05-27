@@ -8,11 +8,15 @@ import io.swagger.annotations.ApiImplicitParams;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -192,5 +196,23 @@ public class ActorController implements ActorService<Long, ActorDto> {
     @PostMapping("/uploadCsvFile")
     public List<ReadActorFromExcelFile> uploadCSVFile(@RequestParam("file") MultipartFile file) {
         return this.actorServiceImpl.uploadCSVFile(file);
+    }
+
+    @GetMapping("/writeCSVFile")
+    public ResponseEntity<InputStreamResource> writeActorToCSVFile() {
+        String fileName = String.valueOf(LocalDateTime.now());
+        ByteArrayInputStream byteArrayInputStream;
+        try {
+            byteArrayInputStream = this.actorServiceImpl.writeActorToCSVFile();
+        } catch (Exception e) {
+            return null;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Disposition", "attachment; filename=" + fileName);
+        headers.setContentType(MediaType.parseMediaType("text/csv"));
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new InputStreamResource(byteArrayInputStream));
     }
 }

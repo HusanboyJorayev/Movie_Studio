@@ -9,6 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.opencsv.CSVWriter;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
@@ -494,6 +495,32 @@ public class ActorServiceImpl implements ActorService<Long, ActorDto> {
             return actor;
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public ByteArrayInputStream writeActorToCSVFile() {
+        ByteArrayOutputStream outputStream=new ByteArrayOutputStream();
+        try (CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream))) {
+            String[] header = {"ID", "NAME", "CODES", "GENDER", "NATIONALITY", "YEAR_OF_BIRTH", "CREATED_AT"};
+            csvWriter.writeNext(header);
+            List<Actor> all = this.actorRepository.findAll();
+            for (Actor actor : all) {
+                String[] data = {
+                        String.valueOf(actor.getId()),
+                        actor.getName(),
+                        String.valueOf(actor.getCodes()),
+                        actor.getGender(),
+                        actor.getNationality(),
+                        String.valueOf(actor.getYearOfBirth()),
+                        String.valueOf(actor.getCreatedAt())
+
+                };
+                csvWriter.writeNext(data);
+            }
+            return new ByteArrayInputStream(outputStream.toByteArray());
+
+        } catch (Exception e) {
+            return null;
         }
     }
 }
