@@ -1,16 +1,18 @@
 package com.example.movie_studio.actor;
 
 import com.example.movie_studio.dto.ApiResponse;
+import com.example.movie_studio.filter.ActorAndCastsFilter;
+import com.example.movie_studio.filter.ReadActorFromExcelFile;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -143,5 +145,52 @@ public class ActorController implements ActorService<Long, ActorDto> {
         String headerValue = "attachment; filename=actors.xlsx";
         response.setHeader(headerKey, headerValue);
         this.actorServiceImpl.generateExcel(response);
+    }
+
+    @GetMapping("/actorAndCastsFilter")
+    public List<ActorDto> filterActorAndCasts(@RequestParam(value = "id", required = false) Long id,
+                                              @RequestParam(value = "name", required = false) String name,
+                                              @RequestParam(value = "codes", required = false) Integer codes,
+                                              @RequestParam(value = "gender", required = false) String gender,
+                                              @RequestParam(value = "nationality", required = false) String nationality,
+                                              @RequestParam(value = "year of birth", required = false) Integer yearOfBirth) {
+
+        return this.actorServiceImpl.filterActorAndCasts(id, name, codes, gender, nationality, yearOfBirth);
+    }
+
+    @GetMapping("/getActorAndCasts")
+    public List<ActorAndCastsFilter> actorAndCastsFilters(@RequestParam(value = "id", required = false) Long id,
+                                                          @RequestParam(value = "name", required = false) String name,
+                                                          @RequestParam(value = "codes", required = false) Integer codes,
+                                                          @RequestParam(value = "gender", required = false) String gender,
+                                                          @RequestParam(value = "nationality", required = false) String nationality,
+                                                          @RequestParam(value = "year of birth", required = false) Integer yearOfBirth,
+                                                          @RequestParam(value = "actorId", required = false) Long actorId,
+                                                          @RequestParam(value = "roleType", required = false) String rolType,
+                                                          @RequestParam(value = "actor created at", required = false) LocalDateTime actorCreatedAt,
+                                                          @RequestParam(value = "casts created at", required = false) LocalDateTime castsCreatedAt) {
+        return this.actorServiceImpl.actorAndCastsFilters(id, name, codes, gender, nationality, yearOfBirth, actorId, rolType, actorCreatedAt, castsCreatedAt);
+    }
+
+    @PostMapping("/readFromExcelFile")
+    public List<ReadActorFromExcelFile> readActorFromExcelFile(@RequestParam("file") MultipartFile file) {
+        return this.actorServiceImpl.readActorFromExcelFile(file);
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file", value = "Select the CSV file", dataType = "file", paramType = "form", required = true)
+    })
+    @PostMapping("/readCSVFile")
+    public List<ReadActorFromExcelFile> redActorFromCSVFile(@RequestParam("file") MultipartFile file) {
+        try {
+            return this.actorServiceImpl.redActorFromCSVFile(file);
+        } catch (Exception e) {
+            throw new RuntimeException("error - > " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/uploadCsvFile")
+    public List<ReadActorFromExcelFile> uploadCSVFile(@RequestParam("file") MultipartFile file) {
+        return this.actorServiceImpl.uploadCSVFile(file);
     }
 }
