@@ -50,4 +50,14 @@ public class CastsController implements CastsService<Integer, CastsDto> {
     public ResponseEntity<ApiResponse<List<CastsDto>>> getAllCastsByActorId(@PathVariable("id") Long id) {
         return this.castsServiceImpl.getAllCastsByActorId(id);
     }
+
+    @GetMapping("/castsFilter")
+    public ResponseEntity<List<CastsDto>> filterCasts(@RequestParam(value = "id", required = false) Integer id,
+                                                      @RequestParam(value = "moveId", required = false) Integer moveId,
+                                                      @RequestParam(value = "actorId", required = false) Long actorId,
+                                                      @RequestParam(value = "role_type", required = false) String roleType,
+                                                      @RequestParam(value = "page", required = false,defaultValue = "0") Integer page,
+                                                      @RequestParam(value = "size", required = false,defaultValue = "10") Integer size) {
+        return this.castsServiceImpl.filterCasts(id, moveId, actorId, roleType, page, size);
+    }
 }

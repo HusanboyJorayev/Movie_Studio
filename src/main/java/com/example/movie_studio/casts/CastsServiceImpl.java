@@ -2,10 +2,14 @@ package com.example.movie_studio.casts;
 
 import com.example.movie_studio.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Pageable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -120,5 +124,14 @@ public class CastsServiceImpl implements CastsService<Integer, CastsDto> {
                         .message("Ok")
                         .data(casts.stream().map(this.castsMapper::toDto).toList())
                         .build());
+    }
+
+    public ResponseEntity<List<CastsDto>> filterCasts(Integer id, Integer moveId, Long actorId, String roleType,Integer page,Integer size) {
+        Specification<Casts> castsFilter = new CastsFilter(id, moveId, actorId, roleType);
+        Page<Casts> all = this.castsRepository.findAll(castsFilter, PageRequest.of(page, size));
+        if (all.isEmpty()) {
+            return ResponseEntity.ok().body(List.of());
+        }
+        return ResponseEntity.ok().body(all.stream().map(this.castsMapper::toDto).toList());
     }
 }
