@@ -71,4 +71,12 @@ public class StudioController implements StudioService<Integer, StudioDto> {
     public ResponseEntity<ApiResponse<StudioDto>> getWithMovie(@PathVariable("id") Integer id) {
         return this.studentServiceImpl.getWithMovie(id);
     }
+
+    @GetMapping("/filter_studio")
+    public ResponseEntity<ApiResponse<List<StudioDto>>> filterStudio(@RequestParam(value = "company_name", required = false) String companyName,
+                                                                     @RequestParam(value = "city", required = false) String city,
+                                                                     @RequestParam(value = "founded", required = false) Integer founded,
+                                                                     @RequestParam(value = "company_type", required = false) String companyType) {
+        return this.studentServiceImpl.filterStudio(companyName, city, founded, companyType);
+    }
 }

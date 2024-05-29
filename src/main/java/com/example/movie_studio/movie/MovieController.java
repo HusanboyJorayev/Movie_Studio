@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,5 +58,18 @@ public class MovieController implements MovieService<Integer, MovieDto> {
     @GetMapping("/getMovieSomeIds/{ids}")
     public ResponseEntity<ApiResponse<List<MovieDto>>> getMovieSomeIds(@PathVariable("ids") List<Integer> list) {
         return this.movieServiceImpl.getMovieSomeIds(list);
+    }
+
+    @GetMapping("/filter_movie")
+    public ResponseEntity<ApiResponse<List<MovieDto>>> filterMovie(@RequestParam(value = "ids", required = false) Set<Integer> ids,
+                                                                   @RequestParam(value = "director_id", required = false) Integer directorId,
+                                                                   @RequestParam(value = "studio_id", required = false) Integer studioId,
+                                                                   @RequestParam(value = "name", required = false) String name,
+                                                                   @RequestParam(value = "country_of_release", required = false) String countryOfRelease,
+                                                                   @RequestParam(value = "language", required = false) String language,
+                                                                   @RequestParam(value = "filming_location", required = false) String filmingLocation,
+                                                                   @RequestParam(value = "year_of_birth", required = false) Integer yearOfRelease,
+                                                                   @RequestParam(value = "category", required = false) String category) {
+        return this.movieServiceImpl.filterMovie(ids, directorId, studioId, name, countryOfRelease, language, filmingLocation, yearOfRelease, category);
     }
 }

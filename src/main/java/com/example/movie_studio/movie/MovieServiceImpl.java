@@ -4,12 +4,14 @@ import com.example.movie_studio.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -140,5 +142,24 @@ public class MovieServiceImpl implements MovieService<Integer, MovieDto> {
                         .message("Ok")
                         .data(movies.stream().map(this.mapper::toDto).toList())
                         .build());
+    }
+
+    public ResponseEntity<ApiResponse<List<MovieDto>>> filterMovie(Set<Integer> ids,
+                                                                   Integer directorId,
+                                                                   Integer studioId,
+                                                                   String name,
+                                                                   String countryOfRelease,
+                                                                   String language,
+                                                                   String filmingLocation,
+                                                                   Integer yearOfRelease,
+                                                                   String category) {
+        Specification<Movie> movieSpecification = new MovieFilter(ids, directorId, studioId, name, countryOfRelease,
+                language, filmingLocation, yearOfRelease, category);
+        List<Movie> all = this.movieRepository.findAll(movieSpecification);
+        return ResponseEntity.ok(ApiResponse.<List<MovieDto>>builder()
+                .success(true)
+                .message("Ok")
+                .data(all.stream().map(this.mapper::toDto).toList())
+                .build());
     }
 }

@@ -6,6 +6,7 @@ import com.example.movie_studio.movie.MovieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -173,5 +174,17 @@ public class StudentServiceImpl implements StudioService<Integer, StudioDto> {
                         .code(-1)
                         .message("Studio is not found")
                         .build()));
+    }
+
+    public ResponseEntity<ApiResponse<List<StudioDto>>> filterStudio(String companyName, String city, Integer founded, String companyType) {
+        Specification<Studio> specification = new StudioFilter(companyName, city, founded, companyType);
+        List<Studio> all = this.studioRepository.findAll(specification);
+        if (!all.isEmpty())
+            return ResponseEntity.ok(ApiResponse.<List<StudioDto>>builder()
+                    .success(true)
+                    .message("Ok")
+                    .data(all.stream().map(this.studioMapper::toDto).toList())
+                    .build());
+        return ResponseEntity.ok(ApiResponse.<List<StudioDto>>builder().build());
     }
 }
