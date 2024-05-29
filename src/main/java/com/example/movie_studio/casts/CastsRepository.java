@@ -1,5 +1,6 @@
 package com.example.movie_studio.casts;
 
+import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -27,4 +28,8 @@ public interface CastsRepository extends JpaRepository<Casts, Integer>, JpaSpeci
             """)
     List<Casts> findAllCasts();
 
+    @Query("""
+            select c.id,c.roleType from Casts as c
+            """)
+    List<Tuple> getSomeFields();
 }

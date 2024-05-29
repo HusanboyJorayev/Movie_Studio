@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -171,5 +172,20 @@ public class DirectorServiceImpl implements DirectorService<Integer, DirectorDto
                         .code(-1)
                         .message("Director is not found")
                         .build()));
+    }
+
+    public ResponseEntity<ApiResponse<List<DirectorDto>>> filterDirector(String name, String gender, String placeBirth,
+                                                                         String country, Integer yearBirth) {
+        Specification<Director> directorSpecification = new DirectorFilter(name, gender, placeBirth, country, yearBirth);
+        List<Director> all = this.directorRepository.findAll(directorSpecification);
+        if (all.isEmpty()) {
+            return null;
+        }
+        return ResponseEntity.ok()
+                .body(ApiResponse.<List<DirectorDto>>builder()
+                        .success(true)
+                        .message("Ok")
+                        .data(all.stream().map(this.directorMapper::toDto).toList())
+                        .build());
     }
 }

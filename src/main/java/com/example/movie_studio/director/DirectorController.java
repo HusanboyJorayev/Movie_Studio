@@ -65,4 +65,14 @@ public class DirectorController implements DirectorService<Integer, DirectorDto>
     public ResponseEntity<ApiResponse<DirectorDto>> getWithMovie(@PathVariable("id") Integer id) {
         return this.directorServiceImpl.getWithMovie(id);
     }
+
+    @GetMapping("/filter_director")
+    public ResponseEntity<ApiResponse<List<DirectorDto>>> filterDirector(@RequestParam(value = "name", required = false) String name,
+                                                                         @RequestParam(value = "gender", required = false) String gender,
+                                                                         @RequestParam(value = "place_birth",required = false) String placeBirth,
+                                                                         @RequestParam(value = "country", required = false) String country,
+                                                                         @RequestParam(value = "year_of_birth",required = false) Integer yearBirth) {
+        return this.directorServiceImpl.filterDirector(name, gender, placeBirth, country, yearBirth);
+
+    }
 }

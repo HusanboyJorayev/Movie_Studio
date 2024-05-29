@@ -36,4 +36,15 @@ public class CastsDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
+    public static class SubCasts {
+        private Integer id;
+        private String roleType;
+    }
 }

@@ -56,8 +56,13 @@ public class CastsController implements CastsService<Integer, CastsDto> {
                                                       @RequestParam(value = "moveId", required = false) Integer moveId,
                                                       @RequestParam(value = "actorId", required = false) Long actorId,
                                                       @RequestParam(value = "role_type", required = false) String roleType,
-                                                      @RequestParam(value = "page", required = false,defaultValue = "0") Integer page,
-                                                      @RequestParam(value = "size", required = false,defaultValue = "10") Integer size) {
+                                                      @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                      @RequestParam(value = "size", required = false, defaultValue = "10") Integer size) {
         return this.castsServiceImpl.filterCasts(id, moveId, actorId, roleType, page, size);
+    }
+
+    @GetMapping("/get_some_fields")
+    public ResponseEntity<List<CastsDto.SubCasts>> someCastsFields() {
+        return this.castsServiceImpl.someCastsFields();
     }
 }

@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 @RequiredArgsConstructor
 public class CastsServiceImpl implements CastsService<Integer, CastsDto> {
@@ -126,12 +128,22 @@ public class CastsServiceImpl implements CastsService<Integer, CastsDto> {
                         .build());
     }
 
-    public ResponseEntity<List<CastsDto>> filterCasts(Integer id, Integer moveId, Long actorId, String roleType,Integer page,Integer size) {
+    public ResponseEntity<List<CastsDto>> filterCasts(Integer id, Integer moveId, Long actorId,
+                                                      String roleType, Integer page, Integer size) {
         Specification<Casts> castsFilter = new CastsFilter(id, moveId, actorId, roleType);
         Page<Casts> all = this.castsRepository.findAll(castsFilter, PageRequest.of(page, size));
         if (all.isEmpty()) {
             return ResponseEntity.ok().body(List.of());
         }
         return ResponseEntity.ok().body(all.stream().map(this.castsMapper::toDto).toList());
+    }
+
+    public ResponseEntity<List<CastsDto.SubCasts>> someCastsFields() {
+        List<CastsDto.SubCasts> list = this.castsRepository.getSomeFields()
+                .stream().map(t ->
+                        new CastsDto.SubCasts(
+                                t.get(0, Integer.class),
+                                t.get(1, String.class))).toList();
+        return ResponseEntity.ok().body(list);
     }
 }
