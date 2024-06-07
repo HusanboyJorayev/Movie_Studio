@@ -5,10 +5,6 @@ import com.example.movie_studio.dto.ApiResponse;
 import com.example.movie_studio.filter.ActorAndCastsFilter;
 import com.example.movie_studio.filter.ActorAndCastsSpecification;
 import com.example.movie_studio.filter.ReadActorFromExcelFile;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.opencsv.CSVWriter;
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
@@ -35,16 +31,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
-
-import static java.awt.Color.red;
 
 @Service
 @RequiredArgsConstructor
