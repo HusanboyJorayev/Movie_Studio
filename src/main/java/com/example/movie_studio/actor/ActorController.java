@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @RestController
@@ -214,5 +215,15 @@ public class ActorController implements ActorService<Long, ActorDto> {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(new InputStreamResource(byteArrayInputStream));
+    }
+
+    @GetMapping("/getActor/{id}")
+    public ActorDto getActor(@PathVariable(value = "id") Long id) {
+        return Objects.requireNonNull(this.get(id).getBody()).getData();
+    }
+
+    @GetMapping("/getAllActor")
+    public List<ActorDto> getAllActor() {
+        return Objects.requireNonNull(this.getAll().getBody()).getData();
     }
 }
