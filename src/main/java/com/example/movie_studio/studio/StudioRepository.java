@@ -32,6 +32,8 @@ public interface StudioRepository extends JpaRepository<Studio, Integer>, JpaSpe
             """)
     List<Studio> getStudiosSomeIds(List<Integer> list);
 
-    @Query(value = "select * from studio offset :p * :s limit :s",nativeQuery = true)
+    @Query(value = "select * from studio offset :p * :s limit :s", nativeQuery = true)
     List<Studio> getStudioPagesByList(@Param("p") Integer page, @Param("s") Integer size);
+
+    boolean existsByFounded(Integer founded);
 }

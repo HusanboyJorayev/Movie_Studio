@@ -14,9 +14,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 
 import java.io.ByteArrayInputStream;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -225,5 +228,23 @@ public class ActorController implements ActorService<Long, ActorDto> {
     @GetMapping("/getAllActor")
     public List<ActorDto> getAllActor() {
         return Objects.requireNonNull(this.getAll().getBody()).getData();
+    }
+
+    @GetMapping(value = "/flux", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    public Flux<Long> increment() {
+        return Flux.interval(Duration.ofSeconds(1))
+                .take(10);
+    }
+
+    @GetMapping(value = "/fluxElement", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    public Flux<Integer> incrementFlux() {
+        return Flux.just(1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12)
+                .delayElements(Duration.ofSeconds(1));
+    }
+
+    @GetMapping(value = "/monoElement", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    public Mono<Integer> incrementMono() {
+        return Mono.just(1)
+                .take(Duration.ofSeconds(1));
     }
 }

@@ -26,6 +26,10 @@ public class StudentServiceImpl implements StudioService<Integer, StudioDto> {
 
     @Override
     public ResponseEntity<ApiResponse<StudioDto>> create(StudioDto dto) {
+
+        if (this.studioRepository.existsByFounded(dto.getFounded()))
+            return ResponseEntity.ok(null);
+
         var studio = this.studioMapper.toEntity(dto);
         studio.setCreatedAt(LocalDateTime.now());
         var createStudio = this.studioRepository.save(studio);
@@ -71,6 +75,13 @@ public class StudentServiceImpl implements StudioService<Integer, StudioDto> {
 
     @Override
     public ResponseEntity<ApiResponse<StudioDto>> update(StudioDto dto, Integer id) {
+        if (this.studioRepository.existsByFounded(dto.getFounded()))
+            return ResponseEntity.ok(null);
+        else if (!this.studioRepository.existsByFounded(dto.getFounded())) {
+            if (this.studioRepository.findById(id).isEmpty()) {
+                return ResponseEntity.ok(null);
+            }
+        }
         return this.studioRepository.findStudioById(id)
                 .map(studio -> {
                     studio.setUpdatedAt(LocalDateTime.now());

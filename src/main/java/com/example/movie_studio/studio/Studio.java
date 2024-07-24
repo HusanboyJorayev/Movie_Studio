@@ -21,6 +21,7 @@ public class Studio {
     private Integer id;
     private String companyName;
     private String city;
+    // todo uniqe - founded
     private Integer founded;
     private String companyType;
 
